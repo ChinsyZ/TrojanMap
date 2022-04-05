@@ -1,8 +1,10 @@
 #include "ui.h"
 
 #include <ncurses.h>
-
 #include <map>
+#include <string>
+#include <string_view>
+#include <vector>
 
 UI::UI() {
   char_map_[' '] = 56;

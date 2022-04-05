@@ -10,7 +10,11 @@
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(const std::string& id) {
-    return 0;
+  auto search = data.find(id);
+  if (search != data.end()) {
+    return data[id].lat;
+  }
+  return -1;
 }
 
 /**
@@ -20,7 +24,10 @@ double TrojanMap::GetLat(const std::string& id) {
  * @return {double}         : longitude
  */
 double TrojanMap::GetLon(const std::string& id) { 
-    return 0;
+  if (data.find(id) != data.end()) {
+    return data[id].lon;
+  }
+  return -1;
 }
 
 /**
@@ -30,7 +37,10 @@ double TrojanMap::GetLon(const std::string& id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(const std::string& id) { 
-    return "";
+  if (data.find(id) != data.end()) {
+    return data[id].name;
+  }
+  return "NULL";
 }
 
 /**
@@ -40,7 +50,10 @@ std::string TrojanMap::GetName(const std::string& id) {
  * @return {std::vector<std::string>}  : neighbor ids
  */
 std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
-    return {};
+  if (data.find(id) != data.end()) {
+    return data[id].neighbors;
+  }
+  return {};
 }
 
 /**
@@ -52,6 +65,17 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
  */
 std::string TrojanMap::GetID(const std::string& name) {
   std::string res = "";
+
+
+  for (auto iter : data) {
+    // iter.first: id
+    // iter.second: Node
+    auto search = iter.second.name;
+    if (search == name) {
+      return iter.first;
+    }
+  }
+
   return res;
 }
 
@@ -63,6 +87,15 @@ std::string TrojanMap::GetID(const std::string& name) {
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
   std::pair<double, double> results(-1, -1);
+
+  auto find_id = GetID(name);
+  if (find_id != "") {
+    auto lat = GetLat(find_id);
+    auto lon = GetLon(find_id); 
+    std::pair<double, double> res(lat, lon);
+    return res;
+  }
+
   return results;
 }
 
@@ -72,7 +105,28 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * 
  */
 int TrojanMap::CalculateEditDistance(std::string a, std::string b){
-    return 0;
+  // Time Complexity: O(n*m) 
+  // m and n is the length of two strings
+
+  int m = a.length();
+  int n = b.length();
+
+  // Tabluation
+  int dp[m][n];
+  for (int i = 0; i <= m; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i == 0) dp[i][j] = j;
+      else if (j == 0) dp[i][j] = i;
+      else {
+        if (a[i-1] == b[j-1]) dp[i][j] = dp[i-1][j-1];
+        else {
+          dp[i][j] = std::min({dp[i-1][j], dp[i][j-1], dp[i-1][j-1]});
+        }
+      }
+    }
+  }
+
+  return dp[m][n];
 }
 
 /**
@@ -82,7 +136,17 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
+  // Iterate through the map and find the name with smallest edit distance 
+
   std::string tmp = "";
+  int min_distance = name.length();
+
+  for (auto iter : data) {
+    auto temp_name = iter.second.name;
+    int current_distance = CalculateEditDistance(name, temp_name);
+    min_distance = std::min(min_distance, current_distance);
+    if (min_distance == current_distance) tmp = temp_name;
+  }
   return tmp;
 }
 
@@ -96,6 +160,18 @@ std::string TrojanMap::FindClosestName(std::string name) {
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
   std::vector<std::string> results;
+
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  for (auto iter : data) {
+    std::string current_name = iter.second.name;
+    std::string current_name_copy = iter.second.name;
+    std::transform(current_name.begin(), current_name.end(), current_name.begin(), ::tolower);
+    int len = name.length();
+    if (name == current_name.substr(0, len)) {
+      results.push_back(current_name_copy);
+    }
+  }
+
   return results;
 }
 

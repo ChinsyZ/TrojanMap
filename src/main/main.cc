@@ -12,5 +12,6 @@ int main() {
     x.PlotMap();
     x.PrintMenu();
   #endif
+
   return 0;
 }
