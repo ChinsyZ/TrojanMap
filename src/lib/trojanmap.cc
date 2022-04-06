@@ -219,6 +219,53 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
   std::vector<std::string> path;
+  std::string start = GetID(location1_name);
+  std::string goal = GetID(location2_name);
+
+  std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>> , std::greater<std::pair<double, std::string>> > pq;
+  pq.push(make_pair(0, start));
+
+  std::map<std::string, double> shortest_map;
+  for(auto it = data.begin(); it != data.end(); it++){
+    shortest_map[it->second.id] = INT_MAX;
+  }
+  shortest_map[start] = 0;
+
+  std::map<std::string, std::string> predecessor_map;
+  while(!pq.empty()) {
+    double cur_dist = pq.top().first;
+    std::string cur_node = pq.top().second;
+    pq.pop();
+
+    if(cur_node == goal) {
+      break;
+    } 
+
+    if(cur_dist > shortest_map[cur_node]) {
+      continue;
+    } 
+
+    for(auto neighbor : GetNeighborIDs(cur_node)){
+      double new_dist = cur_dist + CalculateDistance(cur_node, neighbor);
+      if(shortest_map[neighbor] > new_dist) {
+        shortest_map[neighbor] = new_dist;
+        predecessor_map[neighbor] = cur_node;
+        pq.push(make_pair(new_dist, neighbor));
+      }
+    }
+  }
+
+  if(shortest_map[goal] != INT_MAX) {
+    std::string cur_node = goal;
+    while(cur_node != start) {
+      path.push_back(cur_node);
+      cur_node = predecessor_map[cur_node];
+    }
+
+    path.push_back(start);
+    std::reverse(std::begin(path), std::end(path));
+  }
+
   return path;
 }
 
