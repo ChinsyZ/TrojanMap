@@ -45,55 +45,58 @@ data: A map stores the id of location as key and its Node as value
 ## Phase 1 report  
 
 **GetLat()**  
-Time Complexity: O(1)  
-Space Complexity: O(1)  
 Get the Latitude of a Node given its id  
+- Time Complexity: O(1)  
+- Space Complexity: O(1)  
 
 **GetLon()**  
-Time Complexity: O(1)  
-Space Complexity: O(1)  
-Get the Longitude of a Node given its id
+Get the Longitude of a Node given its id  
+- Time Complexity: O(1)  
+- Space Complexity: O(1)  
 
 **GetName()**  
-Time Complexity: O(n)  
-Space Complexity: O(1)  
-Get the name of a Node given its id
+Get the name of a Node given its id  
+- Time Complexity: O(n)  
+- Space Complexity: O(1)  
 
 **GetID**  
-Time Complexity: O(1)  
-Space Complexity: O(1)  
-Get the id given its name
+Get the id given its name  
+- Time Complexity: O(1)  
+- Space Complexity: O(1)  
 
 **GetNeighborIDs**  
-Time Complexity: O(1)  
-Space Complexity: O(1)  
-Get the neighbor ids of a Node
+Get the neighbor ids of a Node  
+- Time Complexity: O(1)  
+- Space Complexity: O(1)  
 
 **GetPosition**  
-Time Complexity: O(1)  
-Space Complexity: O(1)  
-Given a location name, return its latitude and longitude. If id does not exist, return (-1, -1)  
+Given a location name, return its latitude and longitude. If id does not exist, return (-1, -1)    
+- Time Complexity: O(1)  
+- Space Complexity: O(1)  
 
-**CalculateEditDistance**
-Time Complexity: O(n*m)  
-Space Complexity: O(n*m)  
+**CalculateEditDistance**  
+Calculate edit distance between two location names, that is how many substitution, deletion, and addition to modify one word to another.   
+- Time Complexity: O(n*m)  
+- Space Complexity: O(n*m)  
 *n and m are the length of two words*  
-Calculate edit distance between two location names, that is how many substitution, deletion, and addition to modify one word to another. 
 
-**FindClosestName**
-Time Complexity: `O(n*m*d)`  
-Space Complexity: `O(n*m*d)`  
-*n and m are the length of two words, d is the number of all data nodes*  
+
+**FindClosestName**  
 Iterate through the map and find the name with smallest edit distance.  
+- Time Complexity: O(n * m * d)  
+- Space Complexity: O(n * m * d)  
+*n and m are the length of two words, d is the number of all data nodes*  
+
 
 **Autocomplete**  
-Time Complexity: O(n)  
-Space Complexity: O(n)  
 Returns a vector of names given a partial name.  
+- Time Complexity: O(n)  
+- Space Complexity: O(n)  
+
 Run time testing:  
-Input: `ch`  
-Output: 11 matches  
-Time taken by function: 8ms   
+- Input: `ch`  
+- Output: 11 matches  
+- Time taken by function: 8 ms   
 
 ## Phase 2 report
 
