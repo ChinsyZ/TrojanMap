@@ -280,8 +280,52 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name){
   std::vector<std::string> path;
+
+  std::string start_node = GetID(location1_name);
+  std::string end_node = GetID(location2_name);
+
+  std::map<std::string, std::vector<std::string>> neighbor_map;
+  neighbor_map[start_node] = GetNeighborIDs(start_node);
+
+  std::map<std::string, double> shortest_map;
+  for(auto it = data.begin(); it != data.end(); it++){
+    shortest_map[it->second.id] = INT_MAX;
+  }
+  shortest_map[start_node] = 0;
+
+  std::map<std::string, std::string> predecessor_map;
+  bool stop = false;
+
+  while(!stop){
+    stop = true;
+    for(auto it = neighbor_map.begin(); it != neighbor_map.end();) {
+      for(auto neighbor : it->second){
+        double new_dist = shortest_map[it->first] + CalculateDistance(it->first, neighbor);
+        if(shortest_map[neighbor] > new_dist) {
+          shortest_map[neighbor] = new_dist;
+          predecessor_map[neighbor] = it->first;
+          neighbor_map.insert(make_pair(neighbor, GetNeighborIDs(neighbor)));
+          stop = false;
+        }
+      }
+      neighbor_map.erase(it++);
+    }
+  }
+
+  if(shortest_map[end_node] != INT_MAX) {
+    std::string cur_node = end_node;
+    while(cur_node != start_node) {
+      path.push_back(cur_node);
+      cur_node = predecessor_map[cur_node];
+    }
+
+    path.push_back(start_node);
+    std::reverse(std::begin(path), std::end(path));
+  }
+
   return path;
 }
+
 
 /**
  * Travelling salesman problem: Given a list of locations, return the shortest
