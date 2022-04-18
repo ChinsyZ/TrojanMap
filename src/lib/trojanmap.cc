@@ -1,5 +1,5 @@
 #include "trojanmap.h"
-
+#include <algorithm>
 //-----------------------------------------------------
 // TODO: Student should implement the following:
 //-----------------------------------------------------
@@ -158,16 +158,22 @@ std::string TrojanMap::FindClosestName(std::string name) {
  * @param  {std::string} name          : partial name
  * @return {std::vector<std::string>}  : a vector of full names
  */
-std::vector<std::string> TrojanMap::Autocomplete(std::string name){
+std::vector<std::string> TrojanMap::Autocomplete(std::string search_name){
   std::vector<std::string> results;
 
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  
   for (auto iter : data) {
     std::string current_name = iter.second.name;
+    if (search_name.size() > current_name.size()){
+      continue;
+    }
+
     std::string current_name_copy = iter.second.name;
+    // Converting searching name and current name to lowercase
+    std::transform(search_name.begin(), search_name.end(), search_name.begin(), ::tolower);
     std::transform(current_name.begin(), current_name.end(), current_name.begin(), ::tolower);
-    int len = name.length();
-    if (name == current_name.substr(0, len)) {
+    int len = search_name.length();
+    if (search_name == current_name.substr(0, len)) {
       results.push_back(current_name_copy);
     }
   }
@@ -361,6 +367,17 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
  */
 std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locations_filename){
   std::vector<std::string> location_names_from_csv;
+  std::string line;
+  std::fstream file(locations_filename, std::ios::in);
+  if (file.is_open()) {
+    // Skip the first line
+    getline(file, line);
+
+    // Read each line 
+    while (getline(file, line)) {
+      location_names_from_csv.push_back(line);
+    }
+  }
   return location_names_from_csv;
 }
 
@@ -373,6 +390,25 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
  */
 std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std::string dependencies_filename){
   std::vector<std::vector<std::string>> dependencies_from_csv;
+  std::string line, word;
+  std::vector<std::string> row;
+  std::fstream file(dependencies_filename, std::ios::in);
+  if (file.is_open()) {
+    // Skip the first line
+    getline(file, line);
+
+    // Read each line 
+    while (getline(file, line)) {
+      row.clear();
+
+      std::stringstream str(line);
+      while (getline(str, word, ',')) {
+        row.push_back(word);
+      }
+
+      dependencies_from_csv.push_back(row);
+    }
+  }
   return dependencies_from_csv;
 }
 
@@ -387,11 +423,71 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
 std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
                                                      std::vector<std::vector<std::string>> &dependencies){
   std::vector<std::string> result;
-  return result;                                                     
+  std::map<std::string, int> location_with_in_edge;
+  std::map<std::string, std::vector<std::string>> edge_map;
+
+  // Create the Directed Acyclic Graph
+  for (auto pairs : dependencies) {
+    edge_map[pairs[0]].push_back(pairs[1]);
+  }
+  
+  // DFS
+  // initialize the view map by 0 for all locations
+  std::map<std::string, int> view;
+  for (auto location : locations) {
+    view[location] = 0;
+  }
+
+  for (auto location : locations) {
+    auto location_position = std::find(result.begin(), result.end(), location);
+
+    if (view[location]==0 && location_position == result.end()) {
+
+      DeliveringTrojan_DFS_Helper(location, view, edge_map, result);
+    }
+  }
+  std::reverse(result.begin(), result.end());
+
+  // Detect Cycle
+  // If a child node appears before its parent, then there is a cycle
+  int index = 0;
+  std::map<std::string, int>result_position_map;
+  for (auto res:result) {
+    result_position_map[res] = index;
+    index++;
+  }
+
+  for (auto iter : result_position_map) {
+    std::cout << iter.first << ": " << iter.second << std::endl;
+  }
+
+  for (auto pair : dependencies) {
+    if (result_position_map[pair[1]] < result_position_map[pair[0]]) {
+      std::cout << "Detect Cycle, Empty result! " << std::endl;
+      return {};
+    }
+  }
+
+  return result;  
+  
 }
 
+// DFS helper function
+void TrojanMap::DeliveringTrojan_DFS_Helper(std::string root, std::map<std::string, int> &view, 
+                                            std::map<std::string, std::vector<std::string>> edge_map, 
+                                            std::vector<std::string> &result) {                                      
+  view[root] = 1;
+  for (const auto child : edge_map[root]) {
+    if (view[child] != 1) {
+      DeliveringTrojan_DFS_Helper(child, view, edge_map, result);
+    }
+  }
+  result.push_back(root);
+}
+
+
 /**
- * inSquare: Give a id retunr whether it is in square or not.
+ * inSquare: Give a id return whether it is in square or not.
  *
  * @param  {std::string} id            : location id
  * @param  {std::vector<double>} square: four vertexes of the square area

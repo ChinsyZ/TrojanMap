@@ -88,3 +88,38 @@ TEST(TrojanMapTest, FindClosestName) {
   EXPECT_EQ(m.FindClosestName("Dulllce"), "Dulce");
 }
 
+// Test ReadLocationsFromCSVFile function
+TEST(TrojanMapTest, ReadLocationsFromCSVFile) {
+  TrojanMap m;
+
+  // Input path must be changed depend on location on different computer
+  std::string input_file_name = "/home/ee538/Documents/final-project-youungjulie/input/topologicalsort_locations.csv";
+  std::vector<std::string> expected_output = {"Ralphs", "KFC", "Chick-fil-A"};
+  EXPECT_EQ(m.ReadLocationsFromCSVFile(input_file_name), expected_output);
+}
+
+// Test ReadDependenciesFromCSVFile function
+TEST(TrojanMapTest, ReadDependenciesFromCSVFile) {
+  TrojanMap m;
+
+  // Input path must be changed depend on location on different computer
+  std::string input_file_name = "/home/ee538/Documents/final-project-youungjulie/input/topologicalsort_dependencies.csv";
+  std::vector<std::vector<std::string>> expected_output = {{"Ralphs","Chick-fil-A"}, {"Ralphs","KFC"}, {"Chick-fil-A", "KFC"}};
+  EXPECT_EQ(m.ReadDependenciesFromCSVFile(input_file_name), expected_output);
+}
+ 
+TEST(TrojanMapTest, DeliveringTrojan_1) {
+  TrojanMap m;
+  std::vector<std::string> locations = {"Ralphs", "KFC", "Chick-fil-A"};
+  std::vector<std::vector<std::string>> dependencies = {{"Ralphs","Chick-fil-A"}, {"Ralphs","KFC"}, {"Chick-fil-A", "KFC"}};
+  std::vector<std::string> expected_result = {"Ralphs", "Chick-fil-A", "KFC"};
+  EXPECT_EQ(m.DeliveringTrojan(locations, dependencies), expected_result);
+}
+
+TEST(TrojanMapTest, DeliveringTrojan_cycle) {
+  TrojanMap m;
+  std::vector<std::string> locations = {"Ralphs", "KFC", "Chick-fil-A"};
+  std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"KFC", "Chick-fil-A"}, {"Chick-fil-A", "Ralphs"}};
+  std::vector<std::string> expected_result = {};
+  EXPECT_EQ(m.DeliveringTrojan(locations, dependencies), expected_result);
+}

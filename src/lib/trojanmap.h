@@ -15,6 +15,7 @@
 #include <fstream>
 #include <sstream>
 #include <climits>
+#include <algorithm>
 
 // A Node is the location of one point in the map.
 class Node {
@@ -59,7 +60,7 @@ class TrojanMap {
   std::vector<std::string> GetNeighborIDs(const std::string& id);
 
   // Returns a vector of names given a partial name.
-  std::vector<std::string> Autocomplete(std::string name);
+  std::vector<std::string> Autocomplete(std::string search_name);
 
   // Returns lat and lon of the given the name.
   std::pair<double, double> GetPosition(std::string name);
@@ -95,6 +96,10 @@ class TrojanMap {
   // that satisfies the given dependencies.
   std::vector<std::string> DeliveringTrojan(std::vector<std::string> &location_names,
                                             std::vector<std::vector<std::string>> &dependencies);
+
+ void DeliveringTrojan_DFS_Helper(std::string root, std::map<std::string, int> &view, 
+                                  std::map<std::string, std::vector<std::string>> edge_map, 
+                                  std::vector<std::string> &result);
 
   // Given a vector of location ids, it should reorder them such that the path
   // that covers all these points has the minimum length.
