@@ -6,6 +6,58 @@ TEST(TrojanMapStudentTest, Test1) {
 }
 
 // Phase 1
+
+// Test GetLat() function
+TEST(TrojanMapTest, GetLat) {
+  TrojanMap m;
+  // Exist id
+  EXPECT_EQ(m.GetLat("653725"), 34.0360852);
+  // Non-exist id
+  EXPECT_EQ(m.GetLat("100"), -1);
+}
+
+// Test GetLon() function
+TEST(TrojanMapTest, GetLon) {
+  TrojanMap m;
+  // Exist id
+  EXPECT_EQ(m.GetLon("653725"), -118.3212048);
+  // Non-exist id
+  EXPECT_EQ(m.GetLon("100"), -1);
+}
+
+// Test GetName() function
+TEST(TrojanMapTest, GetName) {
+  TrojanMap m;
+  // Exist id, no name
+  EXPECT_EQ(m.GetName("653725"), "");
+  // Exist id, exist name
+  EXPECT_EQ(m.GetName("368167117"), "Ahmanson Commons");
+  // Non-exist id
+  EXPECT_EQ(m.GetName("100"), "NULL");
+}
+
+// Test GetNeighborIDs() function
+TEST(TrojanMapTest, GetNeighborIDs) {
+  TrojanMap m;
+  // Exist id
+  std::vector<std::string> expected_result_1 = {"277327731", "1613324102"};
+  EXPECT_EQ(m.GetNeighborIDs("653725"), expected_result_1);
+  // Exist id
+  std::vector<std::string> expected_result_2 = {"6816288727"};
+  EXPECT_EQ(m.GetNeighborIDs("368167117"), expected_result_2);
+  // Non-exist id
+  std::vector<std::string> expected_result_3 = {};
+  EXPECT_EQ(m.GetNeighborIDs("100"), expected_result_3);
+}
+
+// Test GetID Function
+TEST(TrojanMapTest, GetID) {
+  TrojanMap m;
+  EXPECT_EQ(m.GetID("Ahmanson Commons"), "368167117");
+  EXPECT_EQ(m.GetID("Chipotle"), "732641023");
+  EXPECT_EQ(m.GetID("No place"), "");
+}
+
 // Test Autocomplete function
 TEST(TrojanMapTest, Autocomplete) {
   TrojanMap m;
