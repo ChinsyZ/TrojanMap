@@ -494,6 +494,11 @@ void TrojanMap::DeliveringTrojan_DFS_Helper(std::string root, std::map<std::stri
  * @return {bool}                      : in square or not
  */
 bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
+  auto lat = GetLat(id);
+  auto lon = GetLon(id);
+  if (lon >= square[0] && lon <= square[1] && lat <= square[2] && lat >= square[3]){
+    return true;
+  }
   return false;
 }
 
@@ -506,6 +511,12 @@ bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
 std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
   // include all the nodes in subgraph
   std::vector<std::string> subgraph;
+  // example: square = {-118.299, -118.264, 34.032, 34.011}
+  for (auto it = data.begin(); it != data.end();it++){
+    if (inSquare(it->first, square)){
+      subgraph.push_back(it->first);
+    }
+  }
   return subgraph;
 }
 
@@ -518,7 +529,40 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * @return {bool}: whether there is a cycle or not
  */
 bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+  std::map<std::string, bool> visited_map;
+  for (auto ids: GetSubgraph(square)){
+    visited_map[ids] = false;
+  }
+  
+  for(auto it = visited_map.begin(); it != visited_map.end(); it++) {
+    if(it->second == false) {
+      auto parentid = it->first;
+      if(hasCycle(it->first, visited_map, parentid, square) == true) {
+        return true;
+      }
+    }
+  }
   return false;
+}
+bool TrojanMap::hasCycle(std::string current_id, std::map<std::string, bool> &visited, 
+                std::string parent_id, std::vector<double> &square){
+  visited[current_id] = true;
+  for(auto neighbor: GetNeighborIDs(current_id)) {
+    if(inSquare(neighbor, square)) {
+
+      if(visited[neighbor] == false) {
+        auto parentid = current_id;
+        if(hasCycle(neighbor, visited, parentid, square) == true) {
+          return true;
+        } 
+      } else {
+        if(neighbor != parent_id) {
+          return true;
+          }
+      }
+    }
+  }             
+  return false;              
 }
 
 /**
