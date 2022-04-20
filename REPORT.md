@@ -105,3 +105,55 @@ Run time testing:
 **CalculatePathLength**
 
 **CalculateShortestPath_Dijkstra**
+
+This function is using Dijkstra algorithm to calculate shortest distance from `location1_name` to `location2_name`.
+```cpp
+std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(std::string location1_name, std::string location2_name);
+```
+To realize this function, we use data structure below:
+```cpp
+std::vector<std::string> path;
+std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>> , std::greater<std::pair<double, std::string>> > pq;
+std::map<std::string, double> shortest_map;
+std::map<std::string, std::string> predecessor_map;
+```
+- Time Complexity: O(E + VlogV), where E is the number of edges and V is the number of vertices. 
+
+Run time testing:  
+- Input: `Ralphs`, `Target`
+- Output: "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131","7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705","6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011","6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323","6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159","6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486","7071032399","4015372485","6813379479","6813379584","6814769289","5237417650",
+The distance of the path is:0.927969 miles  
+- Time taken by function: 118 ms  
+- Graph:
+
+
+**CalculateShortestPath_Bellman_Ford**
+
+This function is using Bellman_Ford algorithm to calculate shortest distance from `location1_name` to `location2_name`.
+```cpp
+std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(std::string location1_name, std::string location2_name);
+```
+To realize this function, we use data structure below:
+```cpp
+std::vector<std::string> path;
+std::map<std::string, std::vector<std::string>> neighbor_map;
+std::map<std::string, double> shortest_map;
+std::map<std::string, std::string> predecessor_map;
+```
+- Time Complexity: O(E*V), where E is the number of edges and V is the number of vertices. 
+
+Run time testing:  
+- Input: `Ralphs`, `Target`  
+- Output: "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131","7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705","6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011","6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323","6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159","6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486","7071032399","4015372485","6813379479","6813379584","6814769289","5237417650",
+The distance of the path is:0.927969 miles 
+- Time taken by function: 7860 ms 
+- Graph:
+<img width="708" alt="trojanmap_shortestpath" src="https://user-images.githubusercontent.com/98196892/164145007-53d430d8-d53a-460b-8e27-ef9df43422b0.png">
+
+**CycleDetection**
+Run time testing:  
+- Input: `-118.299`,`-118.264`,`34.032`,`34.011` 
+- Output: there exists a cycle in the subgraph 
+- Time taken by function: 29 ms 
+- Graph:
+<img width="708" alt="trojanmap_cycledetection" src="https://user-images.githubusercontent.com/98196892/164145072-ed16ee12-1f16-46a9-b3ac-2dc023b6a7e4.png">
