@@ -175,3 +175,91 @@ TEST(TrojanMapTest, DeliveringTrojan_cycle) {
   std::vector<std::string> expected_result = {};
   EXPECT_EQ(m.DeliveringTrojan(locations, dependencies), expected_result);
 }
+
+// Phase 2
+// Test CalculateShortestPath_Dijkstra function
+TEST(TrojanMapTest, CalculateShortestPath_Dijkstra) {
+  TrojanMap m;
+  
+  // Test from Ralphs to Target
+  auto path = m.CalculateShortestPath_Dijkstra("Ralphs", "Target");
+  std::vector<std::string> gt{
+      "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131",
+      "7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705",
+      "6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011",
+      "6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323",
+      "6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159",
+      "6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486",
+      "7071032399","4015372485","6813379479","6813379584","6814769289","5237417650"}; // Expected path
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+  
+  // Reverse the input from Ralphs to Target
+  path = m.CalculateShortestPath_Dijkstra("Target", "Ralphs");
+  std::reverse(gt.begin(),gt.end()); // Reverse the path
+
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+}
+
+// Test CalculateShortestPath_Bellman_Ford function
+TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
+  TrojanMap m;
+  
+  // Test from Ralphs to Target
+  auto path = m.CalculateShortestPath_Bellman_Ford("Ralphs", "Target");
+  std::vector<std::string> gt{
+    "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131",
+    "7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705",
+    "6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011",
+    "6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323",
+    "6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159",
+    "6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486",
+    "7071032399","4015372485","6813379479","6813379584","6814769289","5237417650"}; // Expected path
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+  
+  // Reverse the input from Ralphs to Target
+  path = m.CalculateShortestPath_Bellman_Ford("Target", "Ralphs");
+  std::reverse(gt.begin(),gt.end()); // Reverse the path
+
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+}
+
+// Test cycle detection function
+TEST(TrojanMapTest, CycleDetection) {
+  TrojanMap m;
+  
+  // Test case 1
+  std::vector<double> square1 = {-118.260, -118.254, 34.032, 34.021};
+  auto sub1 = m.GetSubgraph(square1);
+  bool result1 = m.CycleDetection(sub1, square1);
+  EXPECT_EQ(result1, true);
+
+  // Test case 2
+  std::vector<double> square2 = {-118.290, -118.289, 34.030, 34.021};
+  auto sub2 = m.GetSubgraph(square2);
+  bool result2 = m.CycleDetection(sub2, square2);
+  EXPECT_EQ(result2, false);
+}
+
+
+// Test topologicalSort function
+TEST(TrojanMapTest, TopologicalSort) {
+  TrojanMap m;
+
+  std::vector<std::string> location_names = {"Cardinal Gardens", "Coffee Bean1", "Aldewaniah", "CVS"};
+  std::vector<std::vector<std::string>> dependencies = {{"Cardinal Gardens","Coffee Bean1"}, {"Cardinal Gardens","CVS"}, {"Coffee Bean1","CVS"}, {"CVS", "Aldewaniah"}};
+  auto result = m.DeliveringTrojan(location_names, dependencies);
+  std::vector<std::string> gt ={"Cardinal Gardens", "Coffee Bean1","CVS", "Aldewaniah"};
+  EXPECT_EQ(result, gt);
+}
