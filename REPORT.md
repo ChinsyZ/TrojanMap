@@ -100,10 +100,6 @@ Run time testing:
 
 ## Phase 2 report
 
-**CalculateDistance**
-
-**CalculatePathLength**
-
 **CalculateShortestPath_Dijkstra**
 
 This function is using Dijkstra algorithm to calculate shortest distance from `location1_name` to `location2_name`.
