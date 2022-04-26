@@ -577,6 +577,32 @@ bool TrojanMap::hasCycle(std::string current_id, std::map<std::string, bool> &vi
  */
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
   std::vector<std::string> res;
+  std::string curid;
+  std::string curname;
+  std::priority_queue<Point, std::vector<Point>, cmp> pq;
+  for(auto it = data.begin(); it != data.end(); it++){
+    curid = it->first;
+    curname = GetName(curid);
+    if (it->second.attributes.count(attributesName)){
+      if (curname == name) continue;
+      double dis = CalculateDistance(GetID(name),GetID(curname));
+      Point *closePoint = new Point(curid, dis);
+      if (dis <= r){
+        pq.push(*closePoint);
+      }
+      if (pq.size()>k){
+        pq.pop();
+      }
+    }
+  }
+  while(!pq.empty()){
+    Point cur = pq.top();
+    pq.pop();
+    std::string sub = cur.name;
+    std::cout << sub << std::endl;
+    res.push_back(sub);
+  }
+  std::reverse(res.begin(), res.end());
   return res;
 }
 
