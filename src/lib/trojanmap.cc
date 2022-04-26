@@ -340,16 +340,181 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
  * @param  {std::vector<std::string>} input : a list of locations needs to visit
  * @return {std::pair<double, std::vector<std::vector<std::string>>} : a pair of total distance and the all the progress to get final path
  */
+
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Brute_force(
                                     std::vector<std::string> location_ids) {
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+  // Brute Force method: find all permutations of the path and select the shortest distance method
+
+  // Map: convert string id to int index
+  std::unordered_map<int, std::string> map;
+  for (size_t i = 0; i < location_ids.size(); i++) {
+    std::pair<int, std::string> temp (i,  location_ids[i]);
+    map.insert(temp);
+  }
+  
+  // Initialize inputs
+  std::pair<double, std::vector<std::vector<int>>> records;
+  std::vector<std::vector<double>> weights = Distance_Map(location_ids);
+  int start = 0;
+  std::vector<int> cur_path = {start};
+
+  // Generate permutations
+  records.first = INT64_MAX;
+  std::vector<std::vector<int>> temp_route = TSP_aux(start, weights, start, 0, cur_path, records);
+  // print_matrix_int(temp_route);
+
+  // Convert int index route to std::string route
+  std::pair<double, std::vector<std::vector<std::string>>> records_final;
+  print_matrix(records_final.second);
+  records_final.first = records.first;
+  for (size_t j = 0; j < temp_route.size(); j++) {
+    std::vector<int> index = temp_route[j];
+    records_final.second.push_back({});
+    for (size_t m = 0; m < index.size(); m++) {
+      records_final.second[j].push_back(map[index[m]]);
+    }
+    records_final.second[j].push_back(map[0]);
+  }
+  
+  return records_final;
 }
+
+// Find all permutations of the input locations
+std::vector<std::vector<int>> TrojanMap::TSP_aux(int start,
+                                                std::vector<std::vector<double>> &weights,
+                                                int cur_node, double cur_cost,
+                                                std::vector<int> &cur_path, 
+                                                std::pair<double, std::vector<std::vector<int>>> &records) {
+  // If at the leaf
+  if (cur_path.size() == weights.size()) {
+    double final_cost = cur_cost + weights[cur_node][start];
+    
+    if (final_cost < records.first) {
+      records.first = final_cost;
+      records.second.push_back(cur_path);
+    }
+  }
+
+  // Evaluvate all children
+  for (size_t i = 0; i < weights.size(); i++) {
+    if (std::find(cur_path.begin(), cur_path.end(), i) != cur_path.end()) {
+      continue;
+    }
+    cur_path.push_back(i);
+    std::vector<std::vector<int>> temp = TSP_aux(start, weights, i, 
+                                                 cur_cost + weights[cur_node][i], cur_path, records);
+    cur_path.pop_back();
+  }
+
+  return records.second;
+}
+
+// Distance Map
+std::vector<std::vector<double>> TrojanMap::Distance_Map(
+  const std::vector<std::string> location_ids) {
+  int s = location_ids.size(); 
+  std::vector<std::vector<double>> result(s, std::vector<double>(s, 0));
+  if (location_ids.size() <= 1) {
+    return result;
+  }
+  
+
+  for (size_t i = 0; i < location_ids.size()-1 ; i++) {
+    for (size_t j = i + 1; j < location_ids.size(); j++) {
+      double dist = CalculateDistance(location_ids[i], location_ids[j]);
+      result[i][j] = dist;
+      result[j][i] = dist;
+    }
+  }
+  return result;
+
+}
+
+void TrojanMap::print_matrix(const std::vector<std::vector<std::string>> input) {
+  for (size_t i = 0; i < input.size(); i++) {
+    for (size_t j = 0; j < input[0].size(); j++) {
+      std::cout << input[i][j] << "->";
+    }
+    std::cout << std::endl;
+  }
+}
+
+void TrojanMap::print_matrix_int(const std::vector<std::vector<int>> input) {
+  for (size_t i = 0; i < input.size(); i++) {
+    for (size_t j = 0; j < input[0].size(); j++) {
+      std::cout << input[i][j] << "->";
+    }
+    std::cout << std::endl;
+  }
+}
+
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+  // Map: convert string id to int index
+  std::unordered_map<int, std::string> map;
+  for (size_t i = 0; i < location_ids.size(); i++) {
+    std::pair<int, std::string> temp (i,  location_ids[i]);
+    map.insert(temp);
+  }
+  
+  // Initialize inputs
+  std::pair<double, std::vector<std::vector<int>>> records;
+  std::vector<std::vector<double>> weights = Distance_Map(location_ids);
+  int start = 0;
+  std::vector<int> cur_path = {start};
+
+  // Generate permutations
+  records.first = INT64_MAX;
+  std::vector<std::vector<int>> temp_route = TSP_aux_Backtracking(start, weights, start, 0, cur_path, records);
+  // print_matrix_int(temp_route);
+
+  // Convert int index route to std::string route
+  std::pair<double, std::vector<std::vector<std::string>>> records_final;
+  print_matrix(records_final.second);
+  records_final.first = records.first;
+  for (size_t j = 0; j < temp_route.size(); j++) {
+    std::vector<int> index = temp_route[j];
+    records_final.second.push_back({});
+    for (size_t m = 0; m < index.size(); m++) {
+      records_final.second[j].push_back(map[index[m]]);
+    }
+    records_final.second[j].push_back(map[0]);
+  }
+  
+  return records_final;
+}
+
+// Find all permutations of the input locations
+std::vector<std::vector<int>> TrojanMap::TSP_aux_Backtracking(int start,
+                                                std::vector<std::vector<double>> &weights,
+                                                int cur_node, double cur_cost,
+                                                std::vector<int> &cur_path, 
+                                                std::pair<double, std::vector<std::vector<int>>> &records) {
+  // If at the leaf
+  if (cur_path.size() == weights.size()) {
+    double final_cost = cur_cost + weights[cur_node][start];
+    
+    if (final_cost < records.first) {
+      records.first = final_cost;
+      records.second.push_back(cur_path);
+    }
+  }
+
+  /// Early Backtracking
+  if (cur_cost >= records.first) {return records.second;}
+
+  // Evaluvate all children
+  for (size_t i = 0; i < weights.size(); i++) {
+    if (std::find(cur_path.begin(), cur_path.end(), i) == cur_path.end()) {
+      cur_path.push_back(i);
+      std::vector<std::vector<int>> temp = TSP_aux(start, weights, i, 
+                                                 cur_cost + weights[cur_node][i], cur_path, records);
+      cur_path.pop_back();
+    }
+  }
+
+  return records.second;
 }
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(

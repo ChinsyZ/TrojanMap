@@ -153,3 +153,77 @@ Run time testing:
 - Time taken by function: 29 ms 
 - Graph:
 <img width="708" alt="trojanmap_cycledetection" src="https://user-images.githubusercontent.com/98196892/164145072-ed16ee12-1f16-46a9-b3ac-2dc023b6a7e4.png">
+
+**Topological Sort**
+
+
+
+
+
+
+## Phase 3 report
+
+
+### Traveling Trojan Problem  
+In this problem, given a list of `location_ids`, we need to find the shortest path that go through all locations and get back to the starting point.  
+There are 3 methods used:  
+1. Brute Force  
+2. Early Backtracking
+3. 2-opt
+
+**TravellingTrojan_Brute_force**
+
+In this method, we generate all permutations, and returning the minimum using the given input `location_ids`.  
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
+      std::vector<std::string> location_ids);
+```  
+We used the helper function to develop the permutation: 
+```c++
+std::vector<std::vector<int>> TSP_aux(int start,
+                                        std::vector<std::vector<double>> &weights,
+                                        int cur_node, double cur_cost,
+                                        std::vector<int> &cur_path, 
+                                        std::pair<double, std::vector<std::vector<int>>> &records);
+```
+
+By using the tree data structure, and set each untravelled location as child nodes, we can find all permutations. The final path is stored at the leaf node.
+Data Structure: 
+```cpp
+std::vector<std::vector<double>> weights // record all location pairs distance
+std::pair<double, std::vector<std::vector<std::string>>> records:
+// records.first: The shortest distance
+// records.second: Each path (permutation) we go through
+```
+
+- Time Complexity: O(n!) where n is the number of location_ids.
+
+Run time testing:  
+- input: "1855166322","9561828291","7863689394","4399914023","7875114139","122925411","122991336","6814820009",
+- output: "1855166322","122925411","122991336","6814820009","7863689394","9561828291","7875114139","4399914023","1855166322",
+The distance of the path is:9.56062 miles         
+Time taken by function: 32 ms
+
+**TravellingTrojan_Backtracking**
+
+In this method, given the input `location_ids`, we generate some permutation. This method is improved from the Brute Force that we abandon the path when the current distance is larger than current minimum path. Finally we return the minimum.  
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
+      std::vector<std::string> location_ids);
+```  
+
+We used the helper function to develop the permutation: 
+```c++
+std::vector<std::vector<int>> TSP_aux(int start,
+                                        std::vector<std::vector<double>> &weights,
+                                        int cur_node, double cur_cost,
+                                        std::vector<int> &cur_path, 
+                                        std::pair<double, std::vector<std::vector<int>>> &records);
+```
+- Time Complexity: O(n!) where n is the number of location_ids.
+
+Run time testing:  
+- input: "1855166322","9561828291","7863689394","4399914023","7875114139","122925411","122991336","6814820009",
+- output: "1855166322","122925411","122991336","6814820009","7863689394","9561828291","7875114139","4399914023","1855166322",
+The distance of the path is:9.56062 miles
+Time taken by function: 25 ms

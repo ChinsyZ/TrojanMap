@@ -110,4 +110,5 @@
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,
   "lldb.showDisassembly": "auto",
+  "git.ignoreLimitWarning": true,
 }

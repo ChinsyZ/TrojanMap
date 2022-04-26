@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <queue>
 #include <stack>
 #include <string>
@@ -110,9 +111,30 @@ class TrojanMap {
   std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
       std::vector<std::string> location_ids);
   
+  // Brute Force method: Find all permutations
+  std::vector<std::vector<int>> TSP_aux(int start,
+                                        std::vector<std::vector<double>> &weights,
+                                        int cur_node, double cur_cost,
+                                        std::vector<int> &cur_path, 
+                                        std::pair<double, std::vector<std::vector<int>>> &records);
+
+  // Create a distance map for all possible location pairs
+  std::vector<std::vector<double>> Distance_Map(const std::vector<std::string> location_ids);
+
+  // Print function: print matrix
+  void print_matrix(const std::vector<std::vector<std::string>> input);
+  void print_matrix_int(const std::vector<std::vector<int>> input);
+
   std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Backtracking(
       std::vector<std::string> location_ids);
-  
+
+  // Backtracking method
+  std::vector<std::vector<int>> TSP_aux_Backtracking(int start,
+                                        std::vector<std::vector<double>> &weights,
+                                        int cur_node, double cur_cost,
+                                        std::vector<int> &cur_path, 
+                                        std::pair<double, std::vector<std::vector<int>>> &records);
+
   std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
       std::vector<std::string> location_ids);
 

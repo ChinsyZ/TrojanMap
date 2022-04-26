@@ -263,3 +263,33 @@ TEST(TrojanMapTest, TopologicalSort) {
   std::vector<std::string> gt ={"Cardinal Gardens", "Coffee Bean1","CVS", "Aldewaniah"};
   EXPECT_EQ(result, gt);
 }
+
+
+// Test TravellingTrojan_Brute_force function 
+TEST(TrojanMapTest, TravellingTrojan_Brute_force) {
+  TrojanMap m;
+
+  std::vector<std::string> location_ids = {"8201681442","6197156485","7786565237","6820972477", 
+                                           "6807600525","1832234142","6819144993","1873055949"};
+  std::pair<double, std::vector<std::vector<std::string>>> result = m.TravellingTrojan_Brute_force(location_ids);
+  std::cout << "Total " << result.second.size() << " permutations" <<  std::endl;
+  double actual = round(result.first * 100000.0) / 100000.0;
+  double expect = 7.94757;
+  
+  EXPECT_EQ(actual, expect);
+}
+
+
+// Test TravellingTrojan_Backtracking function 
+TEST(TrojanMapTest, TravellingTrojan_Backtracking) {
+  TrojanMap m;
+
+  std::vector<std::string> location_ids = {"8201681442","6197156485","7786565237","6820972477", 
+                                           "6807600525","1832234142","6819144993","1873055949"};
+  std::pair<double, std::vector<std::vector<std::string>>> result = m.TravellingTrojan_Backtracking(location_ids);
+  std::cout << "Total " << result.second.size() << " permutations" <<  std::endl;
+  double actual = round(result.first * 100000.0) / 100000.0;
+  double expect = 7.94757;
+  
+  EXPECT_EQ(actual, expect);
+}
