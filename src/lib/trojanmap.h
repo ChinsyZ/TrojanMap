@@ -134,5 +134,18 @@ class TrojanMap {
   //----------------------------------------------------- User-defined functions
 
 };
-
+class Point{
+  public:
+  std::string name;
+  double distance;
+   Point(std::string name, double distance){
+    this->name = name;
+    this->distance = distance;
+  }
+};
+struct cmp{
+    bool operator()(const Point &a,const Point &b){
+      	return a.distance<b.distance;//maximum heap
+    }
+};
 #endif
