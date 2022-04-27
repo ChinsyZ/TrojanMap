@@ -517,9 +517,42 @@ std::vector<std::vector<int>> TrojanMap::TSP_aux_Backtracking(int start,
   return records.second;
 }
 
+// 2-opt
+std::vector<std::string> TrojanMap::TwoOptSwap(std::vector<std::string> &route, int i, int k){
+  std::vector<std::string> ans = route;
+  reverse(ans.begin()+i,ans.begin()+k+1);
+  return ans;
+}
+
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
       std::vector<std::string> location_ids){
   std::pair<double, std::vector<std::vector<std::string>>> records;
+  std::string start = location_ids[0];
+  location_ids.push_back(start);
+  std::vector<std::vector<std::string>> paths;
+  paths.push_back(location_ids);
+  double improvement;
+  double best_distance;
+  do{
+    start_again:
+    improvement = 0;
+    best_distance = CalculatePathLength(location_ids);
+    for(int i = 1; i <= location_ids.size()-3; i++){
+        for(int k = i + 1; k <= location_ids.size()-2; k++){
+        std::vector<std::string> newRoute = TwoOptSwap(location_ids, i, k);
+        double newDistance = CalculatePathLength(newRoute);
+        if(newDistance < best_distance){
+          improvement = 1;
+          best_distance = newDistance;
+          location_ids = newRoute;
+          paths.push_back(newRoute);
+          goto start_again;
+        }
+      }
+    }
+  } while(improvement);
+  records.first = best_distance;
+  records.second = paths;
   return records;
 }
 
