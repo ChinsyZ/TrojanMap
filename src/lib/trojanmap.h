@@ -137,6 +137,7 @@ class TrojanMap {
 
   std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
       std::vector<std::string> location_ids);
+  std::vector<std::string> TwoOptSwap(std::vector<std::string> &route, int i, int k);
 
   // Check whether the id is in square or not
   bool inSquare(std::string id, std::vector<double> &square);
