@@ -110,8 +110,8 @@ To realize this function, we use data structure below:
 ```cpp
 std::vector<std::string> path;
 std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>> , std::greater<std::pair<double, std::string>> > pq;
-std::map<std::string, double> shortest_map;
-std::map<std::string, std::string> predecessor_map;
+std::unordered_map<std::string, double> shortest_map;
+std::unordered_map<std::string, std::string> predecessor_map;
 ```
 - Time Complexity: O(E + VlogV), where E is the number of edges and V is the number of vertices. 
 
@@ -120,7 +120,6 @@ Run time testing:
 - Output: "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131","7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705","6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011","6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323","6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159","6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486","7071032399","4015372485","6813379479","6813379584","6814769289","5237417650",
 The distance of the path is:0.927969 miles  
 - Time taken by function: 118 ms  
-- Graph:
 
 
 **CalculateShortestPath_Bellman_Ford**
@@ -132,9 +131,9 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(std::stri
 To realize this function, we use data structure below:
 ```cpp
 std::vector<std::string> path;
-std::map<std::string, std::vector<std::string>> neighbor_map;
-std::map<std::string, double> shortest_map;
-std::map<std::string, std::string> predecessor_map;
+std::unordered_map<std::string, std::vector<std::string>> neighbor_map;
+std::unordered_map<std::string, double> shortest_map;
+std::unordered_map<std::string, std::string> predecessor_map;
 ```
 - Time Complexity: O(E*V), where E is the number of edges and V is the number of vertices. 
 
@@ -205,7 +204,8 @@ Run time testing:
 - output: "1855166322","122925411","122991336","6814820009","7863689394","9561828291","7875114139","4399914023","1855166322",
 The distance of the path is:9.56062 miles         
 Time taken by function: 32 ms
-
+- Animation:
+![output0](https://user-images.githubusercontent.com/98196892/166068709-70aaf4c7-80e9-4c57-927c-6ff69a28ea27.gif)
 
 **TravellingTrojan_Backtracking**
 
@@ -241,3 +241,78 @@ Run time testing:
 - output: "1855166322","122925411","122991336","6814820009","7863689394","9561828291","7875114139","4399914023","1855166322",
 The distance of the path is:9.56062 miles
 Time taken by function: 25 ms
+- Animation:
+![output0_backtracking](https://user-images.githubusercontent.com/98196892/166069076-b5061f29-faf5-4222-8351-4b75f0643e54.gif)
+
+
+**TravellingTrojan_2opt**
+
+In this method, given the input `location_ids`, we used 2 `for` loops to generate a sub part instead of using permutation. This method is improved that we reversed the sub part and checked if the distance becomes shorter. If yes, we updated the minmum distance we records. Finally we return the minimum.   
+```c++
+ std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
+      std::vector<std::string> location_ids);
+```  
+
+We used the helper function to realize the 2opt algorithm:   
+```c++
+std::vector<std::string> TwoOptSwap(std::vector<std::string> &route, int i, int k);
+```
+
+Data Structure:   
+```cpp
+  std::pair<double, std::vector<std::vector<std::string>>> records;
+  std::vector<std::vector<std::string>> paths;
+```
+
+- Time Complexity: O(n) where n is the number of location_ids.
+
+Run time testing:  
+- input: "1855166322","9561828291","7863689394","4399914023","7875114139","122925411","122991336","6814820009",
+- output: "1855166322","122925411","122991336","6814820009","7863689394","9561828291","7875114139","4399914023","1855166322",
+The distance of the path is:9.56062 miles
+Time taken by function: 2 ms
+- Animation:
+![output0_2opt](https://user-images.githubusercontent.com/98196892/166073112-58f09f1f-cef1-4df7-804c-8535004c4e91.gif)
+
+
+### Find Nearby
+In this method, we return the location names that satisfy the input of `attribute`, `location name`, `radius` and `k`.  
+```c++
+  std::vector<std::string> FindNearby(std::string, std::string, double, int);
+```   
+We construccted a new class to help:   
+```c++
+class CurNode{
+  public:
+  std::string name;
+  double distance;
+   CurNode(std::string name, double distance){
+    this->name = name;
+    this->distance = distance;
+  }
+ // Help to store the name and distance together
+```
+
+Data Structure:  
+```cpp
+  std::vector<std::string> res;
+  std::string curid;
+  std::string curname;
+  std::priority_queue<CurNode, std::vector<CurNode>, keepmax> pq;
+```
+
+- Time Complexity: O(n).
+
+Run time testing:   
+- input: `supermarket`, `Ralphs`, `10`,`10`
+- output: 
+
+  1 Trader Joes
+  
+  2 Cal Mart Beer & Wine Food Store
+  
+  3 Food 4 Less
+  
+  Time taken by function: 75 ms
+- Graph:
+<img width="708" alt="截屏2022-04-29 下午3 38 38" src="https://user-images.githubusercontent.com/98196892/166077266-9a0ec246-e4e1-41be-b2e5-4d473cc2f72f.png">
