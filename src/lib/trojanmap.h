@@ -155,19 +155,19 @@ class TrojanMap {
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
   //----------------------------------------------------- User-defined functions
-
+  int CalculateEditDistance_naive(std::string a, std::string b, size_t a_length, size_t b_length);
 };
-class Point{
+class CurNode{
   public:
   std::string name;
   double distance;
-   Point(std::string name, double distance){
+   CurNode(std::string name, double distance){
     this->name = name;
     this->distance = distance;
   }
 };
-struct cmp{
-    bool operator()(const Point &a,const Point &b){
+struct keepmax{
+    bool operator()(const CurNode &a,const CurNode &b){
       	return a.distance<b.distance;//maximum heap
     }
 };
