@@ -231,13 +231,13 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
   std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>> , std::greater<std::pair<double, std::string>> > pq;
   pq.push(make_pair(0, start));
 
-  std::map<std::string, double> shortest_map;
+  std::unordered_map<std::string, double> shortest_map;
   for(auto it = data.begin(); it != data.end(); it++){
     shortest_map[it->second.id] = INT_MAX;
   }
   shortest_map[start] = 0;
 
-  std::map<std::string, std::string> predecessor_map;
+  std::unordered_map<std::string, std::string> predecessor_map;
   while(!pq.empty()) {
     double cur_dist = pq.top().first;
     std::string cur_node = pq.top().second;
@@ -777,27 +777,29 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
   std::vector<std::string> res;
   std::string curid;
   std::string curname;
-  std::priority_queue<Point, std::vector<Point>, cmp> pq;
+  std::priority_queue<CurNode, std::vector<CurNode>, keepmax> pq;
   for(auto it = data.begin(); it != data.end(); it++){
     curid = it->first;
     curname = GetName(curid);
+    // must be given attribute
     if (it->second.attributes.count(attributesName)){
       if (curname == name) continue;
       double dis = CalculateDistance(GetID(name),GetID(curname));
-      Point *closePoint = new Point(curid, dis);
+      CurNode *newnode = new CurNode(curid, dis);
+      // within the radius
       if (dis <= r){
-        pq.push(*closePoint);
+        pq.push(*newnode);
       }
+      // smaller than k
       if (pq.size()>k){
         pq.pop();
       }
     }
   }
   while(!pq.empty()){
-    Point cur = pq.top();
+    CurNode cur = pq.top();
     pq.pop();
     std::string sub = cur.name;
-    std::cout << sub << std::endl;
     res.push_back(sub);
   }
   std::reverse(res.begin(), res.end());
