@@ -264,7 +264,7 @@ Data Structure:
   std::vector<std::vector<std::string>> paths;
 ```
 
-- Time Complexity: O(n) where n is the number of location_ids.
+- Time Complexity: O(n^2) where n is the number of location_ids.
 
 Run time testing:  
 - input: "1855166322","9561828291","7863689394","4399914023","7875114139","122925411","122991336","6814820009",
