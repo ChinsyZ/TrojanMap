@@ -147,11 +147,11 @@ The distance of the path is:0.927969 miles
 
 **CycleDetection**
 Run time testing:  
-- Input: `-118.299`,`-118.264`,`34.032`,`34.011` 
+- Input: `-118.299`,`-118.264`,`34.030`,`34.026` 
 - Output: there exists a cycle in the subgraph 
-- Time taken by function: 29 ms 
+- Time taken by function: 16 ms 
 - Graph:
-<img width="708" alt="trojanmap_cycledetection" src="https://user-images.githubusercontent.com/98196892/164145072-ed16ee12-1f16-46a9-b3ac-2dc023b6a7e4.png">
+<img width="708" alt="cycle" src="https://user-images.githubusercontent.com/98196892/166170586-1769995f-b23d-416d-96f6-0985ed6afdc8.png">
 
 **Topological Sort**
 
