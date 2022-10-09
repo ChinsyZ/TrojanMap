@@ -1,16 +1,4 @@
-# EE538 Final Project - Spring 2022 - TrojanMap
-
-## Deadline: 
-
-
-Phase 1 submission: Monday, March 11 by 23:59 pm
-
-Phase 2 submission: Wednesday, March 20 by 23:59 pm
-
-Phase 3 submission: Sunday, May 1 by 23:59 pm
-
-Video Presentation: Friday, April 29
-
+# Project - Spring 2022 - TrojanMap
 
 ## TrojanMap
 
